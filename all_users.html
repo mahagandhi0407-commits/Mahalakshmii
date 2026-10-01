@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="result-header">
+
+    <div>
+
+        <div class="badge">
+            ADMIN DASHBOARD
+        </div>
+
+        <h1>
+            FitBuddy Users
+        </h1>
+
+        <p>
+            View registered users and their generated plans.
+        </p>
+
+    </div>
+
+
+    <a
+        href="/admin/logout"
+        class="secondary-button"
+    >
+        Logout
+    </a>
+
+</section>
+
+
+{% if users %}
+
+<div class="admin-list">
+
+    {% for user in users %}
+
+    {% set plan = plan_map.get(user.user_id) %}
+
+
+    <article class="admin-user-card">
+
+        <div class="user-card-header">
+
+            <div>
+
+                <h2>
+                    {{ user.username }}
+                </h2>
+
+                <p>
+                    User ID: {{ user.user_id }}
+                </p>
+
+            </div>
+
+            <span class="goal-badge">
+                {{ user.goal }}
+            </span>
+
+        </div>
+
+
+        <div class="admin-info-grid">
+
+            <div>
+                <span>Age</span>
+                <strong>{{ user.age }}</strong>
+            </div>
+
+            <div>
+                <span>Weight</span>
+                <strong>{{ user.weight }} kg</strong>
+            </div>
+
+            <div>
+                <span>Intensity</span>
+                <strong>{{ user.intensity }}</strong>
+            </div>
+
+            <div>
+                <span>Created</span>
+                <strong>
+                    {{ user.created_at.strftime('%d %b %Y') }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        {% if plan %}
+
+        <details>
+
+            <summary>
+                View Original Plan
+            </summary>
+
+            <pre class="small-plan">{{ plan.original_plan }}</pre>
+
+        </details>
+
+
+        {% if plan.updated_plan %}
+
+        <details>
+
+            <summary>
+                View Updated Plan
+            </summary>
+
+            <pre class="small-plan">{{ plan.updated_plan }}</pre>
+
+        </details>
+
+        <div class="feedback-display">
+
+            <strong>
+                User Feedback
+            </strong>
+
+            <p>
+                {{ plan.feedback }}
+            </p>
+
+        </div>
+
+        {% endif %}
+
+
+        <div class="nutrition-admin">
+
+            <strong>
+                Nutrition Tip
+            </strong>
+
+            <p>
+                {{ plan.nutrition_tip }}
+            </p>
+
+        </div>
+
+        {% endif %}
+
+
+        <form
+            action="/admin/delete/{{ user.user_id }}"
+            method="post"
+            onsubmit="return confirm('Delete this user and their plan?');"
+        >
+
+            <button
+                type="submit"
+                class="danger-button"
+            >
+                Delete User
+            </button>
+
+        </form>
+
+    </article>
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="empty-state">
+
+    <h2>
+        No users yet
+    </h2>
+
+    <p>
+        Generate your first FitBuddy plan from the home page.
+    </p>
+
+</div>
+
+{% endif %}
+
+{% endblock %}
